@@ -636,6 +636,8 @@ public class LineageSimulator {
 			return;
 		ArrayList<String> ongoingLines = new ArrayList<String>();
 		ArrayList<Integer> openSVs = new ArrayList<Integer>();
+		ArrayList<Integer> openCNVs = new ArrayList<Integer>();
+		ArrayList<ArrayList<Character>> trackingCNVs = new ArrayList<ArrayList<Character>>();
 		ArrayList<HashMap<Integer, HashMap<Integer, Mutation>>> variants = new ArrayList<HashMap<Integer, HashMap<Integer, Mutation>>>();
 		ArrayList<Integer> specificIndices = new ArrayList<Integer>();
 		ArrayList<BufferedWriter> outputStreams = new ArrayList<BufferedWriter>();
@@ -645,6 +647,8 @@ public class LineageSimulator {
 		for(CellPopulation cp: sampleNodes){
 			ongoingLines.add("");
 			openSVs.add(-1);
+			openCNVs.add(-1);
+			trackingCNVs.add(new ArrayList<Character>());
 			specificIndices.add(0);
 			variants.add(toPositionMap(cp));
 			File fout = new File(filePath + "/sampleRef"+sampleCount+".fa");
@@ -757,17 +761,26 @@ public class LineageSimulator {
 			    				}
 			    				specificIndices.set(x, specificIndices.get(x)+1);
 			    			}
-			    			else if(m instanceof Mutation.SV){
+			    			else if(m instanceof Mutation.SV && !((Mutation.SV)m).dup){
 			    				outputStreamsSVs.get(x).write(m.name+"\t"+"chr"+currChrom+"\t"+((Mutation.SV)m).startPos+"\t"+((Mutation.SV)m).endPos);
 			    				outputStreamsSVs.get(x).newLine();
 			    				System.out.println(m.name+"\t"+"chr"+currChrom+"\t"+((Mutation.SV)m).startPos+"\t"+((Mutation.SV)m).endPos);
 			    				openSVs.set(x, ((Mutation.SV)m).endPos);
 			    			}
+			    			else if(m instanceof Mutation.SV && ((Mutation.SV)m).dup){
+			    				outputStreamsSVs.get(x).write(m.name+"\t"+"chr"+currChrom+"\t"+((Mutation.SV)m).startPos+"\t"+((Mutation.SV)m).endPos);
+			    				outputStreamsSVs.get(x).newLine();
+			    				System.out.println(m.name+"\t"+"chr"+currChrom+"\t"+((Mutation.SV)m).startPos+"\t"+((Mutation.SV)m).endPos);			    				
+			    				openCNVs.set(x, ((Mutation.SV)m).endPos);
+			    			}
 			    				
 			    		}
 			    		String s = ongoingLines.get(x);
+			    		if(openCNVs.get(x)!=-1)
+			    			trackingCNVs.get(x).add(base);
 		    			if(openSVs.get(x)==-1){
 		    				ongoingLines.set(x, ongoingLines.get(x)+base);
+		    				
 		    				if(ongoingLines.get(x).length()==50){
 		    					BufferedWriter bw = outputStreams.get(x);
 		    					bw.write(ongoingLines.get(x));
@@ -777,6 +790,19 @@ public class LineageSimulator {
 		    			}
 		    			else if(openSVs.get(x)==index+charIndex)
 		    				openSVs.set(x, -1);
+		    			if(openCNVs.get(x)==index+charIndex){
+		    				for(Character c: trackingCNVs.get(x)){
+		    					ongoingLines.set(x, ongoingLines.get(x)+c);
+		    					if(ongoingLines.get(x).length()==50){
+			    					BufferedWriter bw = outputStreams.get(x);
+			    					bw.write(ongoingLines.get(x));
+									bw.newLine();
+									ongoingLines.set(x, "");
+			    				}
+		    				}
+		    				trackingCNVs.set(x, new ArrayList<Character>());
+		    				openCNVs.set(x, -1);
+		    			}
 		    			
 		    				
 		    			
