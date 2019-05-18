@@ -776,11 +776,11 @@ public class LineageSimulator {
 			    				
 			    		}
 			    		String s = ongoingLines.get(x);
-			    		if(openCNVs.get(x)!=-1)
-			    			trackingCNVs.get(x).add(base);
+			    		
 		    			if(openSVs.get(x)==-1){
 		    				ongoingLines.set(x, ongoingLines.get(x)+base);
-		    				
+		    				if(openCNVs.get(x)!=-1)
+				    			trackingCNVs.get(x).add(base);
 		    				if(ongoingLines.get(x).length()==50){
 		    					BufferedWriter bw = outputStreams.get(x);
 		    					bw.write(ongoingLines.get(x));
