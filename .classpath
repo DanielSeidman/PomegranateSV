@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="release/pomegranate.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="S:/Programs/commons-io-2.6/commons-io-2.6.jar"/>
+	<classpathentry kind="lib" path="S:/Programs/commons-io-2.6/commons-io-2.6-javadoc.jar"/>
+	<classpathentry kind="lib" path="S:/Programs/commons-io-2.6/commons-io-2.6-tests.jar"/>
+	<classpathentry kind="lib" path="S:/Programs/commons-io-2.6/commons-io-2.6-test-sources.jar"/>
+	<classpathentry kind="lib" path="S:/S-Docs/lib/commons-cli-1.4/commons-cli-1.4.jar"/>
+	<classpathentry kind="lib" path="S:/S-Docs/lib/uncommons-maths-1.2.3/uncommons-maths-1.2.3.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
